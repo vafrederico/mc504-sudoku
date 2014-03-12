@@ -178,18 +178,8 @@ int sudoku(int tabuleiro[9][9]){
 	// Inicializa o tabuleiro
 	for(i = 0; i < 9; i++)
 		for(j = 0; j < 9;j++)
-			tabuleiro[i][j] = 0;
+			scanf("%d", &tabuleiro[i][j]);
 
-	// Numero de valores determinados
-	scanf("%d", &n);
-
-	// Adiciona ao tabuleiro
-	for(i = 0; i < n; i++){
-
-		scanf("%d %d %d", &x, &y, &v);
-		tabuleiro[x - 1][y - 1] = v;
-
-	}
 	//imprime(tabuleiro);
 
 	// Comeca a processar, se a posicao 0,0 nao tiver nenhum valor valido, o sudoku nao possui solucao
