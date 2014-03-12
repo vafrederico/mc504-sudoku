@@ -5,7 +5,7 @@ PROGRAMS = sudoku
 
 all: $(PROGRAMS)
 
-sudoku: verificacao_thread.o dica.o solucao.o main.o
+sudoku: verificacao_thread.o dica.o solucao.o
 
 dica.o: dica.h
 
