@@ -5,9 +5,11 @@ PROGRAMS = sudoku
 
 all: $(PROGRAMS)
 
-sudoku: verificacao_thread.o dica.o
+sudoku: verificacao_thread.o dica.o solucao.o main.o
 
 dica.o: dica.h
+
+solucao.o: solucao.h
 
 clean:
 	rm -f *~ *.o $(PROGRAMS)
