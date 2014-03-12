@@ -1,8 +1,11 @@
-#include <stdio.h>
+#include "dica.h"
+#include <pthread.h>
+
+int tabuleiro[9][9];
 int respostas[9][9][9];
 	
 /*Funcao que imprime a matriz 9x9 que armazena o jogo de Sudoku (opcionalmente a matriz pode ser global e nao passada por parametro)*/
-void imprime(int tabuleiro[9][9]){
+void imprime(){
 	int i, j, k;
 	for(i=0; i<9; i++){
 		if(i%3 == 0)
@@ -52,8 +55,27 @@ void adicionaResposta(int x, int y, int v){
 	}
 }
 
-// Checa se o numero esta no bloco definido por X = [inicioX,fimX] e Y = [inicioY,fimY]
-int testaNumero(int matriz[9][9], int x, int y, int v){
+
+void* f_threadTestaNumero(void *v) {
+  	
+  	int id = (int) v;
+   	int x = id/9;
+  	int y = id%9;
+
+  	int z;
+  	
+  	for(z = 1; z <= 9; z++){
+  		//printf("Thread X, Y: %d %d %d\n", x, y, z);
+
+		if(testaNumero(x, y, z))
+			adicionaResposta(x, y, z);
+  	}
+
+  return NULL;
+}
+
+
+int testaNumero(int x, int y, int v){
 
 	int i,j;
 	int inicioX, fimX, inicioY, fimY;
@@ -61,14 +83,14 @@ int testaNumero(int matriz[9][9], int x, int y, int v){
 
 	for(i = 0; i <= 8; i++){ // Checa se o elemento esta na linha
 
-		if(matriz[x][i] == v)
+		if(tabuleiro[x][i] == v)
 			return 0;
 
 	}
 
 	for(i = 0; i <= 8; i++){ // Checa se o elemento esta na coluna
 
-		if(matriz[i][y] == v)
+		if(tabuleiro[i][y] == v)
 			return 0;
 
 	}
@@ -113,7 +135,7 @@ int testaNumero(int matriz[9][9], int x, int y, int v){
 
 		for(j = inicioY; j <= fimY; j++){
 
-			if(matriz[i][j] == v){
+			if(tabuleiro[i][j] == v){
 				return 0;
 			}
 
@@ -128,13 +150,13 @@ int testaNumero(int matriz[9][9], int x, int y, int v){
 
 void rodaDicas(){
 
-	int i,j, v;
-
-	int tabuleiro[9][9];
-	// Inicializa o tabuleiro
+	int i,j, v, count=0, id;
+  	pthread_t thr[81];
+  	// Inicializa o tabuleiro
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9;j++){
 			scanf("%d", &tabuleiro[i][j]);
+
 			for(v = 0; v < 9; v++)
 				respostas[i][j][v] = -1;
 		}
@@ -142,14 +164,22 @@ void rodaDicas(){
 
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9;j++){
-			if(tabuleiro[i][j] == 0)
-				for(v = 1; v <= 9; v++)
-					if(testaNumero(tabuleiro, i, j, v))
-						adicionaResposta(i, j, v);
+			if(tabuleiro[i][j] == 0){
+				id = (i*9+j);
+				if(pthread_create(&thr[count], NULL, f_threadTestaNumero, (void *) id)){
+			 	    fprintf(stderr, "Erro na criação da thread. \n");
+		 	   	} else {
+		 	   		count++;
+		 	   	}
+			}
 		}
 	}
 
-	imprime(tabuleiro);
+	for(i = 0; i < count; i++){
+		pthread_join(thr[i], NULL);
+	}
+
+	imprime();
 }
 
 int main(){
