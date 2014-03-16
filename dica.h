@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-void imprime();
+void imprime_dica();
 
 void adicionaResposta(int x, int y, int v);
 

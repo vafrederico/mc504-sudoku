@@ -1,9 +1,17 @@
+#include "solucao.h"
 #include <stdio.h>
 #include <pthread.h>
-#include "./solucao.h"
+
+#define N_THR 100
+
+typedef struct {
+	char matriz[9][9];
+	int x, y, id;
+} Input;
 
 char sudoku[9][9];
 int flag_solucao;
+int qtdThreads;
 
 Input thrInput[N_THR];
 pthread_t threadPool[N_THR];
@@ -28,6 +36,7 @@ int getFromStack()
 		return -1;
 	}
 	freeCount--;
+	qtdThreads++;
 	return freeStack[freeCount];
 }
 
@@ -178,14 +187,32 @@ void* f_thread(void* p)
 	addToStack(inp->id);
 	interesse[id] = -1;
 	// !FIM DA ZONA CRITICA!
+	pthread_exit(0);	
 	return (void*)	55;
 }
 
-int rodaSolucao()
+void imprime(char mat[9][9]){
+	int i, j;
+	for(i=0; i<9; i++){
+		if(i%3 == 0)
+			printf("--------------------------\n");
+		for(j=0; j<9; j++){
+			if(j%3 == 0)
+				printf(" |");
+			printf(" %c", mat[i][j]);
+		}
+		printf(" |\n");
+	}
+	printf("--------------------------\n\n");
+	return;
+}
+
+int main()
 {
 	int i, j, first;
 	int retorno;
 	Input teste;
+	qtdThreads = 0;
 	
 	for(i = 0; i<N_THR; i++)
 	{
@@ -205,6 +232,9 @@ int rodaSolucao()
 	
 	pthread_create(&threadPool[first],NULL,f_thread,&thrInput[first]);
 	while(freeCount < N_THR);
+	//	printf("|%d|",freeCount);
+	
+	//printf("total:%d",qtdThreads);
 	
 	if(flag_solucao == 0)
 		printf("Sudoku invalido.\n");

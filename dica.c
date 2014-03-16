@@ -1,11 +1,12 @@
 #include "dica.h"
+#include <stdio.h>
 #include <pthread.h>
 
-int tabuleiro[9][9];
-int respostas[9][9][9];
-	
+char tabuleiro[9][9];
+char respostas[9][9][9];
+
 /*Funcao que imprime a matriz 9x9 que armazena o jogo de Sudoku (opcionalmente a matriz pode ser global e nao passada por parametro)*/
-void imprime(){
+void imprime_dica(){
 	int i, j, k;
 	for(i=0; i<9; i++){
 		if(i%3 == 0)
@@ -14,18 +15,18 @@ void imprime(){
 			if(j%3 == 0)
 				printf(" |");
 
-			if (tabuleiro[i][j] == 0){
-				
+			if (tabuleiro[i][j] == 'X'){
+
 				printf( " (");
 
 				for(k = 0; k < 9; k++)
-					if(respostas[i][j][k] != -1)
-						printf(" %d", respostas[i][j][k]);
+					if(respostas[i][j][k] != 'X')
+						printf(" %c", respostas[i][j][k]);
 				printf(")");
 
 			} else {
 
-				printf(" %d", tabuleiro[i][j]);
+				printf(" %c", tabuleiro[i][j]);
 
 			}
 
@@ -48,8 +49,8 @@ void adicionaResposta(int x, int y, int v){
 
 	for(i = 0; i <9; i++){
 
-		if (respostas[x][y][i] == -1){
-			respostas[x][y][i] = v;
+		if (respostas[x][y][i] == 'X'){
+			respostas[x][y][i] = v+48;
 			return;
 		}
 	}
@@ -81,61 +82,31 @@ int testaNumero(int x, int y, int v){
 	int inicioX, fimX, inicioY, fimY;
 
 
-	for(i = 0; i <= 8; i++){ // Checa se o elemento esta na linha
+	for(i = 0; i < 9; i++){ // Checa se o elemento esta na linha
 
-		if(tabuleiro[x][i] == v)
+		if(tabuleiro[x][i] == v+48)
 			return 0;
 
 	}
 
-	for(i = 0; i <= 8; i++){ // Checa se o elemento esta na coluna
+	for(i = 0; i < 9; i++){ // Checa se o elemento esta na coluna
 
-		if(tabuleiro[i][y] == v)
+		if(tabuleiro[i][y] == v+48)
 			return 0;
 
 	}
+
+	inicioX = x/3 * 3;
+	fimX = inicioX + 3;
 	
-	// Primeira linha de bloco
-	if(x <= 2){
-
-		inicioX = 0;
-		fimX = 2;
-		
-	} else if(x <= 5) { // Segunda linha de bloco
-
-		inicioX = 3;
-		fimX = 5;
-
-	} else { // Terceira linha de bloco
-
-		inicioX = 6;
-		fimX = 8;
-
-	}
+	inicioY = y/3 * 3;
+	fimY = inicioY + 3;
 	
-	// Primeira coluna de bloco
-	if(y <= 2){
-
-		inicioY = 0;
-		fimY = 2;
-		
-	} else if(y <= 5) { // Segunda coluna de bloco
-
-		inicioY = 3;
-		fimY = 5;
-
-	} else { // Terceira coluna de bloco
-
-		inicioY = 6;
-		fimY = 8;
-
-	}
-
 	for(i = inicioX; i <= fimX; i++){
 
 		for(j = inicioY; j <= fimY; j++){
 
-			if(tabuleiro[i][j] == v){
+			if(tabuleiro[i][j] == v+48){
 				return 0;
 			}
 
@@ -152,24 +123,24 @@ void rodaDicas(){
 
 	int i,j, v, count=0, id;
 
-	printf ("Digite a matriz com o sudoku abaixo, usar 0 para campos vazios ao inves de X:\n");
+	printf ("Digite a matriz com o sudoku:\n");
   	pthread_t thr[81];
   	// Inicializa o tabuleiro
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9;j++){
-			scanf("%d", &tabuleiro[i][j]);
+			scanf("%c ", &tabuleiro[i][j]);
 
 			for(v = 0; v < 9; v++)
-				respostas[i][j][v] = -1;
+				respostas[i][j][v] = 'X';
 		}
 	}
 
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9;j++){
-			if(tabuleiro[i][j] == 0){
+			if(tabuleiro[i][j] == 'X'){
 				id = (i*9+j);
 				if(pthread_create(&thr[count], NULL, f_threadTestaNumero, (void *) id)){
-			 	    fprintf(stderr, "Erro na criação da thread. \n");
+			 	    printf("Erro na criacao da thread. \n");
 		 	   	} else {
 		 	   		count++;
 		 	   	}
@@ -181,6 +152,6 @@ void rodaDicas(){
 		pthread_join(thr[i], NULL);
 	}
 
-	imprime();
+	imprime_dica();
 
 }
