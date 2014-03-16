@@ -1,5 +1,6 @@
 #include <pthread.h>
 #include <stdio.h>
+#include "verificacao.h"
 
 char sudoku[9][9];
 
@@ -44,7 +45,7 @@ void* f_thread(void *v)
 	return (void*) flag;
 }
 
-int main()
+int rodaVerificacao()
 {
 	int i, j;
 
@@ -80,12 +81,13 @@ int main()
 		if(flag_erro == 1) break;
 	}
 	
-	if(flag_erro == 1)
+	return flag_erro;
+	/*if(flag_erro == 1)
 		printf("NOPE. TEM ERRO AQUI.");
 	else
 		printf("YEP. SEU LINDO.");
 	
-	return 0;
+	return 0;*/
 }
 
 /*
