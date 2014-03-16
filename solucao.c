@@ -207,7 +207,7 @@ void imprime(char mat[9][9]){
 	return;
 }
 
-int main()
+int rodaSolucao()
 {
 	int i, j, first;
 	int retorno;
