@@ -151,6 +151,8 @@ int testaNumero(int x, int y, int v){
 void rodaDicas(){
 
 	int i,j, v, count=0, id;
+
+	printf ("Digite a matriz com o sudoku abaixo, usar 0 para campos vazios ao inves de X:\n");
   	pthread_t thr[81];
   	// Inicializa o tabuleiro
 	for(i = 0; i < 9; i++){
@@ -180,11 +182,5 @@ void rodaDicas(){
 	}
 
 	imprime();
-}
 
-int main(){
-
-	rodaDicas();
-
-	return 0;
 }

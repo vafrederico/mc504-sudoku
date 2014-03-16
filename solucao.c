@@ -1,12 +1,6 @@
-#include<stdio.h>
-#include<pthread.h>
-
-#define N_THR 100
-
-typedef struct {
-	char matriz[9][9];
-	int x, y, id;
-} Input;
+#include <stdio.h>
+#include <pthread.h>
+#include "./solucao.h"
 
 char sudoku[9][9];
 int flag_solucao;
@@ -185,22 +179,6 @@ void* f_thread(void* p)
 	interesse[id] = -1;
 	// !FIM DA ZONA CRITICA!
 	return (void*)	55;
-}
-
-void imprime(char mat[9][9]){
-	int i, j;
-	for(i=0; i<9; i++){
-		if(i%3 == 0)
-			printf("--------------------------\n");
-		for(j=0; j<9; j++){
-			if(j%3 == 0)
-				printf(" |");
-			printf(" %c", mat[i][j]);
-		}
-		printf(" |\n");
-	}
-	printf("--------------------------\n\n");
-	return;
 }
 
 int rodaSolucao()

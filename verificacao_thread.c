@@ -4,7 +4,7 @@
 
 char sudoku[9][9];
 
-void* f_thread(void *v)
+void* v_thread(void *v)
 {
 	int id = *(int *) v;
 	int i, j, k, l;
@@ -64,7 +64,7 @@ int rodaVerificacao()
 		for(j = 0; j< 9; j++)
 		{
 			id_thr[i][j] = i*9 + j;
-			pthread_create(&thr[i][j],NULL,f_thread,(void*) &id_thr[i][j]);
+			pthread_create(&thr[i][j],NULL,v_thread,(void*) &id_thr[i][j]);
 		}
 		
 	for(i = 0; i< 9; i++)
@@ -81,13 +81,12 @@ int rodaVerificacao()
 		if(flag_erro == 1) break;
 	}
 	
-	return flag_erro;
-	/*if(flag_erro == 1)
-		printf("NOPE. TEM ERRO AQUI.");
+	if(flag_erro == 1)
+		printf("Errado.");
 	else
-		printf("YEP. SEU LINDO.");
+		printf("Correto.");
 	
-	return 0;*/
+	return 0;
 }
 
 /*

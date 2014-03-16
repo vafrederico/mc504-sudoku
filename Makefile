@@ -1,15 +1,14 @@
-CC = gcc
-CFLAGS = -g -pthread
+CC=gcc
+CFLAGS=-g -pthread
+LDFLAGS=
+SOURCES=main.c dica.c solucao.c verificacao_thread.c
+OBJECTS=$(SOURCES:.c=.o)
+EXECUTABLE=sudoku
 
-PROGRAMS = sudoku
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-all: $(PROGRAMS)
-
-sudoku: verificacao_thread.o dica.o solucao.o
-
-dica.o: dica.h
-
-solucao.o: solucao.h
-
-clean:
-	rm -f *~ *.o $(PROGRAMS)
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
