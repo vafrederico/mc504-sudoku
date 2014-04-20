@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define N_THR 100
+#define N_THR 10
 
 typedef struct {
 	char matriz[9][9];
